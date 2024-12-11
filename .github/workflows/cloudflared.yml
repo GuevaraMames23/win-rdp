@@ -27,9 +27,9 @@ jobs:
     - run: |
         $Content = Get-Content C:\cloudflared.txt
         foreach ($Line in $Content) {
-            $URLString = ($Line | Select-String -Pattern '(https?:\/\/[^\s]+)').Matches.Value
-            if ($URLString) {
-                & C:\send_telegram.ps1 "${{ secrets.TG_TOKEN }}" "${{ secrets.TG_CHAT_ID }}" $URLString
+            if ($Line -match 'https?:\/\/[^\s]+') {
+                $URLString = ($Line -match 'https?:\/\/[^\s]+') | Out-Null
+                & C:\send_telegram.ps1 "${{ secrets.TG_TOKEN }}" "${{ secrets.TG_CHAT_ID }}" $Matches[0]
                 break
             }
         }
